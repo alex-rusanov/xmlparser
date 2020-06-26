@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.Win32;
 using XmlParser.Core.Models;
 
@@ -7,9 +6,19 @@ namespace XmlParser.Core.Tools
 {
     public static class FileManager
     {
+        #region Constants
+
         private const string XmlFileFilter = "Xml Files (*.xml)|*.xml";
 
+        #endregion
+
+        #region Fields
+
         private static readonly OpenFileDialog OpenFileDialog = new OpenFileDialog { Filter = XmlFileFilter };
+
+        #endregion
+
+        #region Public Methods
 
         public static bool OpenXml(out XmlFile xmlFile)
         {
@@ -19,18 +28,12 @@ namespace XmlParser.Core.Tools
 
             if (openFileDialogResult)
             {
-                try
-                {
-                    xmlFile = new XmlFile(OpenFileDialog.FileName, File.ReadAllText(OpenFileDialog.FileName));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e); // TODO: Add logger
-                    throw;
-                }
+                xmlFile = new XmlFile(OpenFileDialog.FileName, File.ReadAllText(OpenFileDialog.FileName));
             }
 
             return openFileDialogResult;
         }
+
+        #endregion
     }
 }

@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tools="clr-namespace:XmlParser.Core.Tools"
     xmlns:viewModels="clr-namespace:XmlParser.Core.ViewModels"
     Title="XmlParser"
     Width="800"
@@ -15,11 +16,29 @@
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
 
+    <Window.InputBindings>
+        <KeyBinding
+            Key="O"
+            Command="{Binding OpenFileCommand}"
+            Modifiers="Control" />
+    </Window.InputBindings>
+
+    <Window.Resources>
+
+        <Style x:Key="ApplyButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="70px" />
+        </Style>
+
+        <tools:VisibilityConverter x:Key="VisibilityConverter" />
+
+    </Window.Resources>
+
     <Grid x:Name="RootGrid">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -30,12 +49,15 @@
                 <MenuItem
                     x:Name="OpenMenuItem"
                     Command="{Binding OpenFileCommand}"
-                    Header="Open" />
+                    Header="Open"
+                    InputGestureText="Ctrl+O" />
+
                 <MenuItem
                     x:Name="ExitMenuItem"
                     Command="{Binding ExitCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
-                    Header="Exit" />
+                    Header="Exit"
+                    InputGestureText="Alt+F4" />
 
             </MenuItem>
 
@@ -45,12 +67,42 @@
             x:Name="ContentTextBox"
             Grid.Row="1"
             HorizontalScrollBarVisibility="Auto"
-            Text="{Binding XmlFile.FormattedXml, Mode=OneWay}"
+            Text="{Binding XmlFile.Content, Mode=OneWay}"
             VerticalScrollBarVisibility="Auto" />
 
-        <StatusBar x:Name="FileNameStatusBar" Grid.Row="2">
+        <Grid
+            x:Name="XPathFilterGrid"
+            Grid.Row="2"
+            Visibility="{Binding XmlFile, Converter={StaticResource VisibilityConverter}}">
 
-            <TextBlock Text="{Binding XmlFile.Path, FallbackValue='Open File to Proceed'}" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                x:Name="XPathFilterTextBox"
+                Grid.Column="0"
+                Text="{Binding XPath, UpdateSourceTrigger=PropertyChanged}">
+
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding ApplyXpathCommand}" />
+                </TextBox.InputBindings>
+
+            </TextBox>
+
+            <Button
+                x:Name="XPathFilterApplyButton"
+                Grid.Column="1"
+                Command="{Binding ApplyXpathCommand}"
+                Content="Apply"
+                Style="{StaticResource ApplyButtonStyle}" />
+
+        </Grid>
+
+        <StatusBar x:Name="FileNameStatusBar" Grid.Row="3">
+
+            <TextBlock x:Name="StatusTextBlock" Text="{Binding Status}" />
 
         </StatusBar>
 
