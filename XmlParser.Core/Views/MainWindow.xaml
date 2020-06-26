@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:XmlParser.Core.ViewModels"
-    Title="MainWindow"
+    Title="XmlParser"
     Width="800"
     Height="450"
     WindowStartupLocation="CenterScreen"
@@ -15,6 +15,45 @@
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
 
-    <Grid />
+    <Grid x:Name="RootGrid">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Menu x:Name="MainMenu" Grid.Row="0">
+
+            <MenuItem x:Name="FileMenuItem" Header="File">
+
+                <MenuItem
+                    x:Name="OpenMenuItem"
+                    Command="{Binding OpenFileCommand}"
+                    Header="Open" />
+                <MenuItem
+                    x:Name="ExitMenuItem"
+                    Command="{Binding ExitCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+                    Header="Exit" />
+
+            </MenuItem>
+
+        </Menu>
+
+        <TextBox
+            x:Name="ContentTextBox"
+            Grid.Row="1"
+            HorizontalScrollBarVisibility="Auto"
+            Text="{Binding XmlFile.FormattedXml, Mode=OneWay}"
+            VerticalScrollBarVisibility="Auto" />
+
+        <StatusBar x:Name="FileNameStatusBar" Grid.Row="2">
+
+            <TextBlock Text="{Binding XmlFile.Path, FallbackValue='Open File to Proceed'}" />
+
+        </StatusBar>
+
+    </Grid>
 
 </Window>
